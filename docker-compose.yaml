@@ -1,13 +1,15 @@
 services:
   todoapp-postgres:
-    image: postgres:18.1-bookworm
+    image: postgres:17-bookworm
     container_name: todoapp-env-postgres
+    env_file:
+      - .env
     environment:
         - POSTGRES_USER=${POSTGRES_USER}
         - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
         - POSTGRES_DB=${POSTGRES_DB}
     volumes:
-        - ${PWD}/out/pgdata:/var/lib/postgresql
+        - ${PWD}/out/pgdata:/var/lib/postgresql/data
   
     restart: always
 
@@ -22,11 +24,10 @@ services:
       - "/migrations"
       - "-database"
       - "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@todoapp-postgres:5432/${POSTGRES_DB}?sslmode=disable"
-      - "up"
 
   port-forwarder:
     image: alpine/socat:1.8.0.3
     container_name: todoapp-postgres-port-forwarder
     command: tcp-listen:5432,fork,reuseaddr tcp-connect:todoapp-postgres:5432
     ports:
-      - "127.0.0.1:5432:5432"  
+      - "127.0.0.1:5433:5432"  
