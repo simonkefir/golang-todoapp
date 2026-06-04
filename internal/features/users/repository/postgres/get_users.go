@@ -20,7 +20,7 @@ func (r *UsersRepository) GetUsers(
 	FROM todoapp.users
 	ORDER BY id ASC
 	LIMIT $1
-	OFFSET $2;
+	OFFSET $2
 	`
 
 	rows, err := r.pool.Query(
@@ -42,7 +42,7 @@ func (r *UsersRepository) GetUsers(
 			&userModel.ID,
 			&userModel.Version,
 			&userModel.FullName,
-			userModel.PhoneNumber,
+			&userModel.PhoneNumber,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("scan users: %w", err)
