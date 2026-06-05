@@ -31,6 +31,12 @@ type UsersRepository interface {
 		ctx context.Context,
 		id int,
 	) error
+
+	PatchUser(
+		ctx context.Context,
+		id int,
+		patch domain.User,
+	) (domain.User, error)
 }
 
 func NewUsersService(
