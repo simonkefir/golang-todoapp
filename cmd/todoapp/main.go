@@ -11,6 +11,9 @@ import (
 	core_pgx_pool "github.com/simonkefir/golang-todoapp/internal/core/repository/postgres/pool/pgx"
 	core_http_middleware "github.com/simonkefir/golang-todoapp/internal/core/transport/http/middleware"
 	core_http_server "github.com/simonkefir/golang-todoapp/internal/core/transport/http/server"
+	tasks_postgres_repository "github.com/simonkefir/golang-todoapp/internal/features/tasks/repository/postgres"
+	tasks_service "github.com/simonkefir/golang-todoapp/internal/features/tasks/service"
+	tasks_transport_http "github.com/simonkefir/golang-todoapp/internal/features/tasks/transport/http"
 	users_postgres_repository "github.com/simonkefir/golang-todoapp/internal/features/users/repository/postgres"
 	users_service "github.com/simonkefir/golang-todoapp/internal/features/users/service"
 	users_transport_http "github.com/simonkefir/golang-todoapp/internal/features/users/transport/http"
@@ -47,6 +50,11 @@ func main() {
 	usersService := users_service.NewUsersService(usersRepository)
 	usersTransportHTTP := users_transport_http.NewUsersHTTPHandler(usersService)
 
+	logger.Debug("initializing feature", zap.String("feature", "tasks"))
+	tasksRepository := tasks_postgres_repository.NewTasksRepository(pool)
+	tasksService := tasks_service.NewTasksService(tasksRepository)
+	tasksTransportHTTP := tasks_transport_http.NewTasksHTTPHandler(tasksService)
+
 	logger.Debug("initializing HTTP server")
 	httpServer := core_http_server.NewHTTPServer(
 		core_http_server.NewConfigMust(),
@@ -58,6 +66,7 @@ func main() {
 	)
 	apiVersionRouterV1 := core_http_server.NewAPIVersionRouter(core_http_server.ApiVersion1)
 	apiVersionRouterV1.RegisterRoutes(usersTransportHTTP.Routes()...)
+	apiVersionRouterV1.RegisterRoutes(tasksTransportHTTP.Routes()...)
 
 	// example of usage
 	// apiVersionRouterV2 := core_http_server.NewAPIVersionRouter(
