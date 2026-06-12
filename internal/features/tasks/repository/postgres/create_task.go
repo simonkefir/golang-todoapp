@@ -20,7 +20,7 @@ func (r *TasksRepository) CreateTask(
 	query := `
 	INSERT INTO todoapp.tasks (title, description, completed, created_at, completed_at, author_user_id)
 	VALUES ($1, $2, $3, $4, $5, $6)
-	RETURNING id, version, title, description, created_at, completed_at, author_user_id;
+	RETURNING id, version, title, description, completed, created_at, completed_at, author_user_id;
 	`
 
 	row := r.pool.QueryRow(
