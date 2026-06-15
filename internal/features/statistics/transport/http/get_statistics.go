@@ -13,7 +13,7 @@ import (
 
 type GetStatisticsResponse struct {
 	TasksCreated               int      `json:"tasks_created"`
-	TasksCompleted             int      `json:"tasks_completed`
+	TasksCompleted             int      `json:"tasks_completed"`
 	TasksCompletedRate         *float64 `json:"tasks_completed_rate"`
 	TasksAverageCompletionTime *string  `json:"tasks_average_completion_time"`
 }
